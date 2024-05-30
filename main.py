@@ -10,8 +10,8 @@ pygame.init()
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Жесткие бои')
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #создает окно игры с указанными размерами
+pygame.display.set_caption('Жесткие бои') #устанавливает заголовок окна с названием игры
 
 #выставляем фреймрейт
 clock = pygame.time.Clock()
@@ -122,97 +122,97 @@ intro_fade = ScreenFade(1, BLACK, 4)
 fighter_1 = Fighter(1, 200, 400, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
 fighter_2 = Fighter(2, 700, 400, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)
 
-#тело игры
-run = True
-game_over = False  # Флаг для состояния завершения игры
+# тело игры
+run = True  # флаг для основного игрового цикла
+game_over = False  # флаг для состояния завершения игры
 
-while run:
-    clock.tick(FPS)
+while run:  # основной игровой цикл
+    clock.tick(FPS)  # ограничение кадров в секунду
     if start_game == False:
         # отрисовка меню игры
-        screen.fill(bg_menu)
-        if start_button.draw(screen):
-            start_game = True
-            start_intro = True
-        if exit_button.draw(screen):
-            run = False
+        screen.fill(bg_menu)  # заполнение экрана цветом меню
+        if start_button.draw(screen):  # проверка нажатия кнопки старта
+            start_game = True  # начало игры
+            start_intro = True  # начало вступления
+        if exit_button.draw(screen):  # проверка нажатия кнопки выхода
+            run = False  # выход из игры
     else:
         # проверка очков
-        if score[0] >= 3 or score[1] >= 3:
-            game_over = True
+        if score[0] >= 3 or score[1] >= 3:  # проверка на завершение игры по очкам
+            game_over = True  # игра завершена
 
         if game_over:
             # затемнение экрана и отрисовка победного изображения и кнопки рестарта
             screen.fill((0, 0, 0))  # затемнение экрана
-            screen.blit(victory_img, (250, 150))
-            if restart_button.draw(screen):
+            screen.blit(victory_img, (250, 150))  # отрисовка победного изображения
+            if restart_button.draw(screen):  # проверка нажатия кнопки рестарта
                 # сброс игры
-                score = [0, 0]
-                fighter_1 = Fighter(1, 200, 400, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
-                fighter_2 = Fighter(2, 700, 400, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)
-                start_game = False
-                game_over = False  # Сброс состояния завершения игры
-            pygame.display.update()
+                score = [0, 0]  # сброс очков
+                fighter_1 = Fighter(1, 200, 400, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)  # перезапуск первого бойца
+                fighter_2 = Fighter(2, 700, 400, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)  # перезапуск второго бойца
+                start_game = False  # сброс состояния игры
+                game_over = False  # сброс состояния завершения игры
+            pygame.display.update()  # обновление экрана
         else:
             # отрисовка фона
-            draw_bg()
+            draw_bg()  # отрисовка фонового изображения
 
             # здоровье персонажей
-            draw_health_bar(fighter_1.health, 20, 20)
-            draw_health_bar(fighter_2.health, 580, 20)
-            draw_text("P1: " + str(score[0]), score_font, RED, 20, 60)
-            draw_text("P2: " + str(score[1]), score_font, RED, 580, 60)
+            draw_health_bar(fighter_1.health, 20, 20)  # отрисовка полоски здоровья первого бойца
+            draw_health_bar(fighter_2.health, 580, 20)  # отрисовка полоски здоровья второго бойца
+            draw_text("P1: " + str(score[0]), score_font, RED, 20, 60)  # отображение очков первого игрока
+            draw_text("P2: " + str(score[1]), score_font, RED, 580, 60)  # отображение очков второго игрока
 
             if intro_count <= 0:
                 # движение персонажей
-                fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
-                fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
+                fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)  # движение первого бойца
+                fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)  # движение второго бойца
             else:
                 # отсчет времени
-                draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
+                draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)  # отображение счетчика времени
                 # обновление счетчика времени
-                if (pygame.time.get_ticks() - last_count_update) >= 1000:
-                    intro_count -= 1
-                    last_count_update = pygame.time.get_ticks()
+                if (pygame.time.get_ticks() - last_count_update) >= 1000:  # проверка, прошла ли 1 секунда
+                    intro_count -= 1  # уменьшение счетчика времени
+                    last_count_update = pygame.time.get_ticks()  # обновление времени последнего изменения
 
             # обновление персонажей
-            fighter_1.update()
-            fighter_2.update()
+            fighter_1.update()  # обновление состояния первого бойца
+            fighter_2.update()  # обновление состояния второго бойца
 
             # отрисовка персонажей
-            fighter_1.draw(screen)
-            fighter_2.draw(screen)
+            fighter_1.draw(screen)  # отрисовка первого бойца
+            fighter_2.draw(screen)  # отрисовка второго бойца
 
             if start_intro == True:
-                if intro_fade.fade():
-                    start_intro = False
-                    intro_fade.fade_counter = 0
+                if intro_fade.fade():  # плавное затухание вступления
+                    start_intro = False  # завершение вступления
+                    intro_fade.fade_counter = 0  # сброс счетчика затухания
 
             if round_over == False:
-                if fighter_1.alive == False:
-                    score[1] += 1
-                    round_over = True
-                    round_over_time = pygame.time.get_ticks()
-                elif fighter_2.alive == False:
-                    score[0] += 1
-                    round_over = True
-                    round_over_time = pygame.time.get_ticks()
+                if fighter_1.alive == False:  # проверка, если первый боец мертв
+                    score[1] += 1  # увеличение очков второго игрока
+                    round_over = True  # окончание раунда
+                    round_over_time = pygame.time.get_ticks()  # сохранение времени окончания раунда
+                elif fighter_2.alive == False:  # проверка, если второй боец мертв
+                    score[0] += 1  # увеличение очков первого игрока
+                    round_over = True  # окончание раунда
+                    round_over_time = pygame.time.get_ticks()  # сохранение времени окончания раунда
 
             else:
                 # вывод победного изображения
-                screen.blit(victory_img, (250, 150))
-                if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:
-                    round_over = False
-                    intro_count = 3
-                    fighter_1 = Fighter(1, 200, 400, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
-                    fighter_2 = Fighter(2, 700, 400, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)
+                screen.blit(victory_img, (250, 150))  # отрисовка победного изображения
+                if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:  # проверка времени окончания раунда
+                    round_over = False  # сброс состояния раунда
+                    intro_count = 3  # сброс счетчика времени
+                    fighter_1 = Fighter(1, 200, 400, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)  # перезапуск первого бойца
+                    fighter_2 = Fighter(2, 700, 400, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)  # перезапуск второго бойца
 
-    # варианты событий
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+    # обработка событий
+    for event in pygame.event.get():  # перебор всех событий
+        if event.type == pygame.QUIT:  # проверка события выхода
+            run = False  # завершение игрового цикла
 
-    pygame.display.update()
+    pygame.display.update()  # обновление экрана
 
 # выход из pygame
 pygame.quit()
